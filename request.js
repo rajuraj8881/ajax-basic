@@ -6,10 +6,19 @@
             const xhr = new XMLHttpRequest();
             xhr.open(method, url);
             xhr.responseType = "json";
+            xhr.setRequestHeader("content-type","application/json");
             xhr.send(data);
 
             xhr.onload = function(){
-                resolve(xhr.response);
+                if(xhr.status >= 400){
+                    reject(xhr.response);
+                }else{
+                    resolve(xhr.response);
+                }
+            }
+
+            xhr.onerror = function(){
+                reject('Something was wrong!');
             }
         });
         return promise;
@@ -31,8 +40,9 @@
           })).then(
             (responseData)=>{
                 console.log(responseData);
-            }
-        );
+            }).catch((err)=>{
+                console.log(err);
+            });
     }
 
     getButton.addEventListener("click", getData);
